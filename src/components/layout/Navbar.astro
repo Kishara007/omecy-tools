@@ -1,0 +1,411 @@
+---
+import { CATEGORY_HUB_SLUGS, getLocaleMeta, LOCALES, SITE, type LocaleCode } from '../../config/site';
+import { getUi } from '../../i18n';
+import { localizePath } from '../../i18n/utils';
+
+interface Props {
+  locale: LocaleCode;
+  currentSlug: string;
+}
+
+const { locale, currentSlug } = Astro.props;
+const ui = getUi(locale);
+const localeMeta = getLocaleMeta(locale);
+
+const homeHref = localizePath(locale, '');
+const videoHref = localizePath(locale, CATEGORY_HUB_SLUGS.video);
+const audioHref = localizePath(locale, CATEGORY_HUB_SLUGS.audio);
+const imageHref = localizePath(locale, CATEGORY_HUB_SLUGS.image);
+
+const isVideoActive =
+  currentSlug === 'video-tools' ||
+  ['video-to-mp3', 'webm-to-mp4', 'video-compressor', 'video-trimmer'].includes(currentSlug);
+const isAudioActive =
+  currentSlug === 'audio-tools' ||
+  ['audio-joiner', 'mp3-cutter', 'wav-to-mp3', 'm4a-to-mp3'].includes(currentSlug);
+const isImageActive =
+  currentSlug === 'image-tools' ||
+  ['image-compressor', 'webp-to-jpg', 'heic-to-jpg', 'image-resizer'].includes(currentSlug);
+---
+
+<header class="sticky top-0 z-40 border-b border-[#9DB2BF]/45 bg-[#FFFFFF]/90 backdrop-blur-md dark:border-[#526D82]/45 dark:bg-[#121A26]/90" data-navbar-root>
+  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:px-6">
+    <!-- Brand Logo -->
+    <a
+      href={homeHref}
+      aria-label={`OMECY — ${ui.nav.home}`}
+      aria-current={currentSlug === '' ? 'page' : undefined}
+      title="OMECY Tools"
+      class="inline-flex shrink-0 items-center gap-2.5 rounded-xl py-1 text-[#27374D] transition-opacity hover:opacity-85 dark:text-[#DDE6ED]"
+    >
+      <svg width="32" height="32" viewBox="0 0 64 64" fill="none" aria-hidden="true" class="shrink-0">
+        <rect width="64" height="64" rx="16" class="fill-[#27374D] dark:fill-[#DDE6ED]" />
+        <circle cx="32" cy="32" r="18" class="stroke-[#DDE6ED] dark:stroke-[#27374D]" stroke-width="5.5" />
+        <path d="M27 24.5L39.5 32L27 39.5V24.5Z" class="fill-[#9DB2BF] dark:fill-[#526D82]" />
+      </svg>
+      <span class="hidden text-lg font-extrabold tracking-[0.12em] lg:inline">OMECY</span>
+    </a>
+
+    <!-- Main Category Navigation (Icons Only on Mobile & Tablet, Icons + Labels on Desktop) -->
+    <nav aria-label={ui.nav.mainNavAria} class="flex items-center gap-2 sm:gap-3 lg:gap-1.5">
+      <a
+        href={videoHref}
+        aria-label={ui.categories.video.name}
+        title={ui.categories.video.name}
+        aria-current={isVideoActive ? 'page' : undefined}
+        class={`inline-flex h-10 w-10 items-center justify-center gap-2 rounded-xl lg:w-auto lg:px-3.5 text-sm font-semibold transition-colors ${
+          isVideoActive
+            ? 'bg-[#DDE6ED] text-[#27374D] dark:bg-[#27374D] dark:text-[#DDE6ED]'
+            : 'text-[#526D82] hover:bg-[#DDE6ED]/60 hover:text-[#27374D] dark:text-[#9DB2BF] dark:hover:bg-[#1D2A3B] dark:hover:text-[#DDE6ED]'
+        }`}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="4" width="20" height="16" rx="3" />
+          <polygon points="10 9 16 12 10 15 10 9" fill="currentColor" stroke="none" />
+        </svg>
+        <span class="hidden lg:inline">{ui.nav.video}</span>
+      </a>
+
+      <a
+        href={audioHref}
+        aria-label={ui.categories.audio.name}
+        title={ui.categories.audio.name}
+        aria-current={isAudioActive ? 'page' : undefined}
+        class={`inline-flex h-10 w-10 items-center justify-center gap-2 rounded-xl lg:w-auto lg:px-3.5 text-sm font-semibold transition-colors ${
+          isAudioActive
+            ? 'bg-[#DDE6ED] text-[#27374D] dark:bg-[#27374D] dark:text-[#DDE6ED]'
+            : 'text-[#526D82] hover:bg-[#DDE6ED]/60 hover:text-[#27374D] dark:text-[#9DB2BF] dark:hover:bg-[#1D2A3B] dark:hover:text-[#DDE6ED]'
+        }`}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 18V5l12-2v13" />
+          <circle cx="6" cy="18" r="3" />
+          <circle cx="18" cy="16" r="3" />
+        </svg>
+        <span class="hidden lg:inline">{ui.nav.audio}</span>
+      </a>
+
+      <a
+        href={imageHref}
+        aria-label={ui.categories.image.name}
+        title={ui.categories.image.name}
+        aria-current={isImageActive ? 'page' : undefined}
+        class={`inline-flex h-10 w-10 items-center justify-center gap-2 rounded-xl lg:w-auto lg:px-3.5 text-sm font-semibold transition-colors ${
+          isImageActive
+            ? 'bg-[#DDE6ED] text-[#27374D] dark:bg-[#27374D] dark:text-[#DDE6ED]'
+            : 'text-[#526D82] hover:bg-[#DDE6ED]/60 hover:text-[#27374D] dark:text-[#9DB2BF] dark:hover:bg-[#1D2A3B] dark:hover:text-[#DDE6ED]'
+        }`}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="3" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <path d="M21 15l-5-5L5 21" />
+        </svg>
+        <span class="hidden lg:inline">{ui.nav.image}</span>
+      </a>
+    </nav>
+
+    <!-- Desktop Right Utility Cluster -->
+    <div class="hidden shrink-0 items-center gap-1.5 lg:flex">
+      <!-- Direct External Support Link (NO popup/modal) -->
+      <a
+        href={SITE.supportUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={ui.nav.supportAria}
+        title={ui.nav.support}
+        class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[#9DB2BF]/70 bg-[#F7F9FB] px-3.5 text-xs font-semibold text-[#27374D] transition-colors hover:bg-[#DDE6ED] dark:border-[#526D82] dark:bg-[#1D2A3B] dark:text-[#DDE6ED] dark:hover:bg-[#27374D]"
+      >
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+          <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+          <line x1="6" y1="1" x2="6" y2="4" />
+          <line x1="10" y1="1" x2="10" y2="4" />
+          <line x1="14" y1="1" x2="14" y2="4" />
+        </svg>
+        <span>{ui.nav.support}</span>
+      </a>
+
+      <!-- GitHub Icon-Only Link -->
+      <a
+        href={SITE.repoUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={ui.nav.githubAria}
+        title="GitHub"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl text-[#526D82] transition-colors hover:bg-[#DDE6ED]/70 hover:text-[#27374D] dark:text-[#9DB2BF] dark:hover:bg-[#1D2A3B] dark:hover:text-[#DDE6ED]"
+      >
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
+        </svg>
+      </a>
+
+      <!-- Language Selector Dropdown (Preserves Current Tool Route) -->
+      <div class="relative" data-lang-menu>
+        <button
+          type="button"
+          data-lang-trigger
+          aria-label={ui.nav.languageAria}
+          aria-expanded="false"
+          aria-haspopup="menu"
+          title={localeMeta.nativeName}
+          class="inline-flex h-10 items-center justify-center gap-1.5 rounded-xl px-2.5 text-xs font-semibold text-[#526D82] transition-colors hover:bg-[#DDE6ED]/70 hover:text-[#27374D] dark:text-[#9DB2BF] dark:hover:bg-[#1D2A3B] dark:hover:text-[#DDE6ED]"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          <span class="uppercase">{locale}</span>
+        </button>
+
+        <div
+          data-lang-popover
+          role="menu"
+          class="hidden absolute right-0 mt-2 w-44 rounded-xl border border-[#9DB2BF]/70 bg-white p-1.5 shadow-xl dark:border-[#526D82] dark:bg-[#1D2A3B]"
+        >
+          {LOCALES.map((item) => {
+            const targetHref = localizePath(item.code, currentSlug);
+            const active = item.code === locale;
+            return (
+              <a
+                href={targetHref}
+                hreflang={item.hreflang}
+                role="menuitem"
+                aria-current={active ? 'true' : undefined}
+                class={`flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${
+                  active
+                    ? 'bg-[#DDE6ED] font-bold text-[#27374D] dark:bg-[#27374D] dark:text-[#DDE6ED]'
+                    : 'font-medium text-[#27374D] hover:bg-[#F7F9FB] dark:text-[#DDE6ED] dark:hover:bg-[#27374D]/60'
+                }`}
+              >
+                <span>{item.nativeName}</span>
+                <span class="text-[11px] uppercase text-[#526D82] dark:text-[#9DB2BF]">{item.code}</span>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Light / Dark Theme Toggle -->
+      <button
+        type="button"
+        data-theme-toggle
+        aria-label={ui.nav.themeToggleAria}
+        title={ui.nav.themeToggleAria}
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl text-[#526D82] transition-colors hover:bg-[#DDE6ED]/70 hover:text-[#27374D] dark:text-[#9DB2BF] dark:hover:bg-[#1D2A3B] dark:hover:text-[#DDE6ED]"
+      >
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="block dark:hidden">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="hidden dark:block">
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile & Tablet Menu Toggle Icon (Houses Support, GitHub, Language, Theme) -->
+    <button
+      type="button"
+      data-mobile-menu-trigger
+      aria-label={ui.nav.mainNavAria}
+      aria-expanded="false"
+      aria-controls="mobile-utility-menu"
+      title={ui.nav.mainNavAria}
+      class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[#27374D] transition-colors hover:bg-[#DDE6ED]/70 lg:hidden dark:text-[#DDE6ED] dark:hover:bg-[#1D2A3B]"
+    >
+      <!-- Hamburger icon (closed) -->
+      <svg data-icon-open width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <line x1="3" y1="12" x2="21" y2="12" />
+        <line x1="3" y1="18" x2="21" y2="18" />
+      </svg>
+      <!-- Close icon (open) -->
+      <svg data-icon-close width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="hidden">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile & Tablet Expandable Utility Menu -->
+  <div
+    id="mobile-utility-menu"
+    data-mobile-menu-panel
+    class="hidden border-t border-[#9DB2BF]/45 bg-white shadow-lg lg:hidden dark:border-[#526D82]/45 dark:bg-[#1D2A3B]"
+  >
+    <div class="mx-auto max-w-6xl space-y-4 px-4 py-4 sm:px-6">
+      <!-- Theme & Quick Links -->
+      <div class="grid gap-2.5 sm:grid-cols-3">
+        <!-- Theme Toggle Button -->
+        <button
+          type="button"
+          data-theme-toggle
+          aria-label={ui.nav.themeToggleAria}
+          class="flex items-center justify-center gap-2 rounded-xl border border-[#9DB2BF]/70 bg-[#F7F9FB] px-3.5 py-2.5 text-sm font-semibold text-[#27374D] transition-colors hover:bg-[#DDE6ED] dark:border-[#526D82] dark:bg-[#121A26] dark:text-[#DDE6ED] dark:hover:bg-[#27374D]"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="block dark:hidden">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="hidden dark:block">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </svg>
+          <span class="inline dark:hidden">{ui.nav.darkMode}</span>
+          <span class="hidden dark:inline">{ui.nav.lightMode}</span>
+        </button>
+
+        <!-- Direct External Support Link (NO popup/modal) -->
+        <a
+          href={SITE.supportUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={ui.nav.supportAria}
+          class="flex items-center justify-center gap-2 rounded-xl border border-[#9DB2BF]/70 bg-[#F7F9FB] px-3.5 py-2.5 text-sm font-semibold text-[#27374D] transition-colors hover:bg-[#DDE6ED] dark:border-[#526D82] dark:bg-[#121A26] dark:text-[#DDE6ED] dark:hover:bg-[#27374D]"
+        >
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+            <line x1="6" y1="1" x2="6" y2="4" />
+            <line x1="10" y1="1" x2="10" y2="4" />
+            <line x1="14" y1="1" x2="14" y2="4" />
+          </svg>
+          <span>{ui.nav.support}</span>
+        </a>
+
+        <!-- GitHub External Link -->
+        <a
+          href={SITE.repoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={ui.nav.githubAria}
+          class="flex items-center justify-center gap-2 rounded-xl border border-[#9DB2BF]/70 bg-[#F7F9FB] px-3.5 py-2.5 text-sm font-semibold text-[#27374D] transition-colors hover:bg-[#DDE6ED] dark:border-[#526D82] dark:bg-[#121A26] dark:text-[#DDE6ED] dark:hover:bg-[#27374D]"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
+          </svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+
+      <!-- Language Selector Grid (Preserves Current Tool Route) -->
+      <div class="space-y-2 border-t border-[#9DB2BF]/35 pt-3.5 dark:border-[#526D82]/35">
+        <p class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#526D82] dark:text-[#9DB2BF]">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+          </svg>
+          <span>{ui.nav.languageLabel}</span>
+        </p>
+        <div class="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+          {LOCALES.map((item) => {
+            const targetHref = localizePath(item.code, currentSlug);
+            const active = item.code === locale;
+            return (
+              <a
+                href={targetHref}
+                hreflang={item.hreflang}
+                aria-current={active ? 'true' : undefined}
+                class={`flex items-center justify-between rounded-lg px-3 py-2 text-xs sm:text-sm transition-colors ${
+                  active
+                    ? 'bg-[#27374D] font-bold text-white dark:bg-[#DDE6ED] dark:text-[#27374D]'
+                    : 'border border-[#9DB2BF]/50 bg-[#F7F9FB] font-medium text-[#27374D] hover:bg-[#DDE6ED] dark:border-[#526D82]/60 dark:bg-[#121A26] dark:text-[#DDE6ED] dark:hover:bg-[#27374D]'
+                }`}
+              >
+                <span>{item.nativeName}</span>
+                <span class={`text-[10px] uppercase ${active ? 'opacity-80' : 'text-[#526D82] dark:text-[#9DB2BF]'}`}>
+                  {item.code}
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  (function () {
+    // Sync Light/Dark toggle across both desktop and mobile menu buttons
+    var toggleBtns = document.querySelectorAll('[data-theme-toggle]');
+    toggleBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var root = document.documentElement;
+        var isDark = root.classList.toggle('dark');
+        try {
+          localStorage.setItem('omecy-theme', isDark ? 'dark' : 'light');
+        } catch (e) {}
+      });
+    });
+
+    // Desktop accessible language popover handler
+    var menuRoot = document.querySelector('[data-lang-menu]');
+    var trigger = document.querySelector('[data-lang-trigger]');
+    var popover = document.querySelector('[data-lang-popover]');
+    var closeLangMenu = function () {
+      if (popover && trigger) {
+        popover.classList.add('hidden');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    };
+    if (menuRoot && trigger && popover) {
+      trigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var hidden = popover.classList.toggle('hidden');
+        trigger.setAttribute('aria-expanded', hidden ? 'false' : 'true');
+      });
+    }
+
+    // Mobile & Tablet utility menu toggle handler
+    var navbarRoot = document.querySelector('[data-navbar-root]');
+    var mobileTrigger = document.querySelector('[data-mobile-menu-trigger]');
+    var mobilePanel = document.querySelector('[data-mobile-menu-panel]');
+    var iconOpen = document.querySelector('[data-icon-open]');
+    var iconClose = document.querySelector('[data-icon-close]');
+    var closeMobileMenu = function () {
+      if (!mobilePanel || !mobileTrigger) return;
+      mobilePanel.classList.add('hidden');
+      mobileTrigger.setAttribute('aria-expanded', 'false');
+      if (iconOpen) iconOpen.classList.remove('hidden');
+      if (iconClose) iconClose.classList.add('hidden');
+    };
+    if (mobileTrigger && mobilePanel) {
+      mobileTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var isHidden = mobilePanel.classList.toggle('hidden');
+        mobileTrigger.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+        if (iconOpen) iconOpen.classList.toggle('hidden', !isHidden);
+        if (iconClose) iconClose.classList.toggle('hidden', isHidden);
+      });
+    }
+
+    document.addEventListener('click', function (e) {
+      if (menuRoot && !menuRoot.contains(e.target)) closeLangMenu();
+      if (navbarRoot && !navbarRoot.contains(e.target)) closeMobileMenu();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeLangMenu();
+        closeMobileMenu();
+      }
+    });
+  })();
+</script>

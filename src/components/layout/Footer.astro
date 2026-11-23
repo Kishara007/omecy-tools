@@ -1,0 +1,154 @@
+---
+import { getToolsByCategory, SITE, type LocaleCode } from '../../config/site';
+import { getToolsDictionary, getUi } from '../../i18n';
+import { localizePath } from '../../i18n/utils';
+
+interface Props {
+  locale: LocaleCode;
+}
+
+const { locale } = Astro.props;
+const ui = getUi(locale);
+const toolsDict = getToolsDictionary(locale);
+
+const videoTools = getToolsByCategory('video');
+const audioTools = getToolsByCategory('audio');
+const imageTools = getToolsByCategory('image');
+---
+
+<footer class="mt-20 border-t border-[#9DB2BF]/45 bg-[#FFFFFF] dark:border-[#526D82]/45 dark:bg-[#1D2A3B]/60">
+  <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+      <!-- Brand Column -->
+      <div class="space-y-4 lg:col-span-2">
+        <a
+          href={localizePath(locale, '')}
+          aria-label={`OMECY — ${ui.nav.home}`}
+          class="inline-flex items-center gap-2.5 text-[#27374D] dark:text-[#DDE6ED]"
+        >
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <rect width="64" height="64" rx="16" class="fill-[#27374D] dark:fill-[#DDE6ED]" />
+            <circle cx="32" cy="32" r="18" class="stroke-[#DDE6ED] dark:stroke-[#27374D]" stroke-width="5.5" />
+            <path d="M27 24.5L39.5 32L27 39.5V24.5Z" class="fill-[#9DB2BF] dark:fill-[#526D82]" />
+          </svg>
+          <span class="text-base font-extrabold tracking-[0.12em]">OMECY</span>
+        </a>
+        <p class="max-w-sm text-sm leading-relaxed text-[#526D82] dark:text-[#9DB2BF]">
+          {ui.footer.tagline}
+        </p>
+        <p class="inline-flex items-center gap-2 rounded-lg bg-[#DDE6ED]/70 px-3 py-1.5 text-xs font-semibold text-[#27374D] dark:bg-[#27374D] dark:text-[#DDE6ED]">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          {ui.footer.localGuarantee}
+        </p>
+      </div>
+
+      <!-- Video Tools Column -->
+      <div>
+        <h2 class="mb-3 text-xs font-bold uppercase tracking-wider text-[#27374D] dark:text-[#DDE6ED]">
+          <a href={localizePath(locale, 'video-tools')} class="hover:underline">
+            {ui.footer.videoHeading}
+          </a>
+        </h2>
+        <ul class="space-y-2 text-sm">
+          {videoTools.map((t) => (
+            <li>
+              <a
+                href={localizePath(locale, t.slug)}
+                class="text-[#526D82] transition-colors hover:text-[#27374D] hover:underline dark:text-[#9DB2BF] dark:hover:text-[#DDE6ED]"
+              >
+                {toolsDict[t.slug].shortName}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Audio Tools Column -->
+      <div>
+        <h2 class="mb-3 text-xs font-bold uppercase tracking-wider text-[#27374D] dark:text-[#DDE6ED]">
+          <a href={localizePath(locale, 'audio-tools')} class="hover:underline">
+            {ui.footer.audioHeading}
+          </a>
+        </h2>
+        <ul class="space-y-2 text-sm">
+          {audioTools.map((t) => (
+            <li>
+              <a
+                href={localizePath(locale, t.slug)}
+                class="text-[#526D82] transition-colors hover:text-[#27374D] hover:underline dark:text-[#9DB2BF] dark:hover:text-[#DDE6ED]"
+              >
+                {toolsDict[t.slug].shortName}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Image & Project Column -->
+      <div class="space-y-6">
+        <div>
+          <h2 class="mb-3 text-xs font-bold uppercase tracking-wider text-[#27374D] dark:text-[#DDE6ED]">
+            <a href={localizePath(locale, 'image-tools')} class="hover:underline">
+              {ui.footer.imageHeading}
+            </a>
+          </h2>
+          <ul class="space-y-2 text-sm">
+            {imageTools.map((t) => (
+              <li>
+                <a
+                  href={localizePath(locale, t.slug)}
+                  class="text-[#526D82] transition-colors hover:text-[#27374D] hover:underline dark:text-[#9DB2BF] dark:hover:text-[#DDE6ED]"
+                >
+                  {toolsDict[t.slug].shortName}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="mb-3 text-xs font-bold uppercase tracking-wider text-[#27374D] dark:text-[#DDE6ED]">
+            {ui.footer.projectHeading}
+          </h2>
+          <ul class="space-y-2 text-sm">
+            <li>
+              <a
+                href={localizePath(locale, 'privacy')}
+                class="text-[#526D82] transition-colors hover:text-[#27374D] hover:underline dark:text-[#9DB2BF] dark:hover:text-[#DDE6ED]"
+              >
+                {ui.footer.privacyLink}
+              </a>
+            </li>
+            <li>
+              <a
+                href={SITE.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-[#526D82] transition-colors hover:text-[#27374D] hover:underline dark:text-[#9DB2BF] dark:hover:text-[#DDE6ED]"
+              >
+                {ui.footer.githubLink}
+              </a>
+            </li>
+            <li>
+              <a
+                href={SITE.supportUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-[#526D82] transition-colors hover:text-[#27374D] hover:underline dark:text-[#9DB2BF] dark:hover:text-[#DDE6ED]"
+              >
+                {ui.footer.supportLink}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 border-t border-[#9DB2BF]/35 pt-6 text-xs text-[#526D82] dark:border-[#526D82]/35 dark:text-[#9DB2BF]">
+      <p>{ui.footer.copyright}</p>
+    </div>
+  </div>
+</footer>

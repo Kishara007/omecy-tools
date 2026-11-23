@@ -1,0 +1,63 @@
+---
+import {
+  HUB_SLUG_TO_CATEGORY,
+  NON_DEFAULT_LOCALES,
+  TOOL_REGISTRY,
+  type CategoryId,
+  type NonDefaultLocaleCode,
+  type ToolSlug,
+} from '../config/site';
+import HomePage from '../components/pages/HomePage.astro';
+import CategoryPage from '../components/pages/CategoryPage.astro';
+import ToolPage from '../components/pages/ToolPage.astro';
+import PrivacyPage from '../components/pages/PrivacyPage.astro';
+
+type PageProps =
+  | { kind: 'locale-home'; locale: NonDefaultLocaleCode }
+  | { kind: 'category'; category: CategoryId }
+  | { kind: 'privacy' }
+  | { kind: 'tool'; toolSlug: ToolSlug };
+
+export function getStaticPaths() {
+  const paths: Array<{ params: { slug: string }; props: PageProps }> = [];
+
+  // Localized homepages: /es, /pt, /de, /fr, /ja, /zh-cn, /ru
+  for (const loc of NON_DEFAULT_LOCALES) {
+    paths.push({
+      params: { slug: loc },
+      props: { kind: 'locale-home', locale: loc },
+    });
+  }
+
+  // English Category Hubs
+  for (const [hubSlug, category] of Object.entries(HUB_SLUG_TO_CATEGORY)) {
+    paths.push({
+      params: { slug: hubSlug },
+      props: { kind: 'category', category },
+    });
+  }
+
+  // English Privacy Policy
+  paths.push({
+    params: { slug: 'privacy' },
+    props: { kind: 'privacy' },
+  });
+
+  // English 12 Flat Tool Slugs
+  for (const tool of TOOL_REGISTRY) {
+    paths.push({
+      params: { slug: tool.slug },
+      props: { kind: 'tool', toolSlug: tool.slug },
+    });
+  }
+
+  return paths;
+}
+
+const props = Astro.props as PageProps;
+---
+
+{props.kind === 'locale-home' && <HomePage locale={props.locale} />}
+{props.kind === 'category' && <CategoryPage locale="en" category={props.category} />}
+{props.kind === 'privacy' && <PrivacyPage locale="en" />}
+{props.kind === 'tool' && <ToolPage locale="en" toolSlug={props.toolSlug} />}

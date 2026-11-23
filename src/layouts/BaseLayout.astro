@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+import { getLocaleMeta, SITE, type LocaleCode } from '../config/site';
+import { getUi } from '../i18n';
+import HeadSEO from '../components/seo/HeadSEO.astro';
+import Navbar from '../components/layout/Navbar.astro';
+import Footer from '../components/layout/Footer.astro';
+
+interface Props {
+  locale: LocaleCode;
+  slug: string;
+  title: string;
+  description: string;
+  schemas: Array<Record<string, unknown>>;
+}
+
+const { locale, slug, title, description, schemas } = Astro.props;
+const localeMeta = getLocaleMeta(locale);
+const ui = getUi(locale);
+---
+
+<!doctype html>
+<html lang={localeMeta.htmlLang}>
+  <head>
+    <HeadSEO
+      locale={locale}
+      slug={slug}
+      title={title}
+      description={description}
+      schemas={schemas}
+    />
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${SITE.gtmId}`}
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+        title="Google Tag Manager"
+      ></iframe>
+    </noscript>
+
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-[#27374D] focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+    >
+      {ui.nav.skipToMain}
+    </a>
+
+    <Navbar locale={locale} currentSlug={slug} />
+
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+
+    <Footer locale={locale} />
+  </body>
+</html>

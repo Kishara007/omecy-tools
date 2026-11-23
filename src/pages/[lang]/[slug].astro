@@ -1,0 +1,51 @@
+---
+import {
+  HUB_SLUG_TO_CATEGORY,
+  NON_DEFAULT_LOCALES,
+  TOOL_REGISTRY,
+  type CategoryId,
+  type NonDefaultLocaleCode,
+  type ToolSlug,
+} from '../../config/site';
+import CategoryPage from '../../components/pages/CategoryPage.astro';
+import ToolPage from '../../components/pages/ToolPage.astro';
+import PrivacyPage from '../../components/pages/PrivacyPage.astro';
+
+type PageProps =
+  | { kind: 'category'; locale: NonDefaultLocaleCode; category: CategoryId }
+  | { kind: 'privacy'; locale: NonDefaultLocaleCode }
+  | { kind: 'tool'; locale: NonDefaultLocaleCode; toolSlug: ToolSlug };
+
+export function getStaticPaths() {
+  const paths: Array<{ params: { lang: string; slug: string }; props: PageProps }> = [];
+
+  for (const locale of NON_DEFAULT_LOCALES) {
+    for (const [hubSlug, category] of Object.entries(HUB_SLUG_TO_CATEGORY)) {
+      paths.push({
+        params: { lang: locale, slug: hubSlug },
+        props: { kind: 'category', locale, category },
+      });
+    }
+
+    paths.push({
+      params: { lang: locale, slug: 'privacy' },
+      props: { kind: 'privacy', locale },
+    });
+
+    for (const tool of TOOL_REGISTRY) {
+      paths.push({
+        params: { lang: locale, slug: tool.slug },
+        props: { kind: 'tool', locale, toolSlug: tool.slug },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const props = Astro.props as PageProps;
+---
+
+{props.kind === 'category' && <CategoryPage locale={props.locale} category={props.category} />}
+{props.kind === 'privacy' && <PrivacyPage locale={props.locale} />}
+{props.kind === 'tool' && <ToolPage locale={props.locale} toolSlug={props.toolSlug} />}

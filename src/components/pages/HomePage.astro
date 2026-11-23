@@ -1,0 +1,280 @@
+---
+import {
+  CATEGORY_HUB_SLUGS,
+  getToolsByCategory,
+  SITE,
+  TOOL_REGISTRY,
+  type CategoryId,
+  type LocaleCode,
+} from '../../config/site';
+import { getToolsDictionary, getUi } from '../../i18n';
+import { buildCanonicalUrl, localizePath } from '../../i18n/utils';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ToolIcon from '../common/ToolIcon.astro';
+
+interface Props {
+  locale: LocaleCode;
+}
+
+const { locale } = Astro.props;
+const ui = getUi(locale);
+const toolsDict = getToolsDictionary(locale);
+const canonicalUrl = buildCanonicalUrl(locale, '');
+const schemaLang = locale === 'zh-cn' ? 'zh-CN' : locale;
+const orgId = `${SITE.origin}/#organization`;
+const websiteId = `${SITE.origin}/#website`;
+const webpageId = `${canonicalUrl}#webpage`;
+const directoryId = `${canonicalUrl}#tool-directory`;
+
+const categories: Array<{ id: CategoryId; hubIcon: 'video-hub' | 'audio-hub' | 'image-hub' }> = [
+  { id: 'video', hubIcon: 'video-hub' },
+  { id: 'audio', hubIcon: 'audio-hub' },
+  { id: 'image', hubIcon: 'image-hub' },
+];
+
+// Homepage JSON-LD: @id-linked Organization + WebSite + WebPage + ItemList (NO BreadcrumbList, NO AggregateRating/Review)
+const schemas: Array<Record<string, unknown>> = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': orgId,
+    name: SITE.name,
+    alternateName: SITE.shortName,
+    url: SITE.origin,
+    logo: {
+      '@type': 'ImageObject',
+      '@id': `${SITE.origin}/#logo`,
+      url: `${SITE.origin}/apple-touch-icon.png`,
+      contentUrl: `${SITE.origin}/apple-touch-icon.png`,
+      width: 180,
+      height: 180,
+      caption: SITE.name,
+    },
+    founder: {
+      '@type': 'Person',
+      name: SITE.author,
+      url: 'https://github.com/Kishara007',
+    },
+    sameAs: [SITE.repoUrl],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': websiteId,
+    name: SITE.name,
+    alternateName: SITE.shortName,
+    url: canonicalUrl,
+    description: ui.home.meta.description,
+    inLanguage: schemaLang,
+    publisher: {
+      '@id': orgId,
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': webpageId,
+    url: canonicalUrl,
+    name: ui.home.meta.title,
+    description: ui.home.meta.description,
+    inLanguage: schemaLang,
+    isPartOf: {
+      '@id': websiteId,
+    },
+    about: {
+      '@id': orgId,
+    },
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      '@id': `${canonicalUrl}#primaryimage`,
+      url: SITE.ogImage,
+      contentUrl: SITE.ogImage,
+      width: SITE.ogImageWidth,
+      height: SITE.ogImageHeight,
+      caption: ui.home.meta.title,
+    },
+    mainEntity: {
+      '@id': directoryId,
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    '@id': directoryId,
+    name: ui.home.allToolsHeading,
+    description: ui.home.allToolsSubheading,
+    numberOfItems: TOOL_REGISTRY.length,
+    itemListElement: TOOL_REGISTRY.map((tool, index) => {
+      const tContent = toolsDict[tool.slug];
+      return {
+        '@type': 'ListItem',
+        position: index + 1,
+        name: tContent.name,
+        description: tContent.cardDesc,
+        url: buildCanonicalUrl(locale, tool.slug),
+      };
+    }),
+  },
+];
+---
+
+<BaseLayout
+  locale={locale}
+  slug=""
+  title={ui.home.meta.title}
+  description={ui.home.meta.description}
+  schemas={schemas}
+>
+  <!-- ABOVE THE FOLD (Full Viewport Hero Stage) -->
+  <section aria-labelledby="hero-heading" class="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-6xl flex-col px-4 pt-6 pb-6 sm:px-6 sm:pt-8 sm:pb-8">
+    <div class="mx-auto flex max-w-3xl flex-1 flex-col items-center justify-center py-6 text-center">
+      <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-[#9DB2BF]/60 bg-[#DDE6ED]/70 px-4 py-1.5 text-xs font-bold tracking-wide text-[#27374D] dark:border-[#526D82] dark:bg-[#27374D] dark:text-[#DDE6ED]">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        <span>{ui.home.badge}</span>
+      </div>
+
+      <h1 id="hero-heading" class="text-4xl font-extrabold tracking-tight text-[#27374D] sm:text-5xl lg:text-6xl lg:leading-[1.1] dark:text-[#DDE6ED]">
+        {ui.home.meta.h1}
+      </h1>
+      <p class="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#526D82] sm:text-lg lg:text-xl dark:text-[#9DB2BF]">
+        {ui.home.meta.subtitle}
+      </p>
+
+      <!-- Category Quick-Jump Pills -->
+      <div class="mt-9 flex flex-wrap items-center justify-center gap-3.5">
+        <a
+          href={localizePath(locale, CATEGORY_HUB_SLUGS.video)}
+          class="inline-flex items-center gap-2 rounded-xl bg-[#27374D] px-6 py-3.5 text-sm sm:text-base font-bold text-white shadow-sm transition-colors hover:bg-[#526D82] dark:bg-[#DDE6ED] dark:text-[#27374D] dark:hover:bg-[#9DB2BF]"
+        >
+          <ToolIcon icon="video-hub" size={19} />
+          {ui.home.exploreVideo}
+        </a>
+        <a
+          href={localizePath(locale, CATEGORY_HUB_SLUGS.audio)}
+          class="inline-flex items-center gap-2 rounded-xl border border-[#9DB2BF] bg-white px-6 py-3.5 text-sm sm:text-base font-bold text-[#27374D] shadow-sm transition-colors hover:bg-[#DDE6ED]/70 dark:border-[#526D82] dark:bg-[#1D2A3B] dark:text-[#DDE6ED] dark:hover:bg-[#27374D]"
+        >
+          <ToolIcon icon="audio-hub" size={19} />
+          {ui.home.exploreAudio}
+        </a>
+        <a
+          href={localizePath(locale, CATEGORY_HUB_SLUGS.image)}
+          class="inline-flex items-center gap-2 rounded-xl border border-[#9DB2BF] bg-white px-6 py-3.5 text-sm sm:text-base font-bold text-[#27374D] shadow-sm transition-colors hover:bg-[#DDE6ED]/70 dark:border-[#526D82] dark:bg-[#1D2A3B] dark:text-[#DDE6ED] dark:hover:bg-[#27374D]"
+        >
+          <ToolIcon icon="image-hub" size={19} />
+          {ui.home.exploreImage}
+        </a>
+      </div>
+    </div>
+
+    <!-- Subtle scroll cue to all 12 tools below the fold -->
+    <div class="flex justify-center pt-2">
+      <a
+        href="#all-tools"
+        aria-label={ui.home.allToolsHeading}
+        title={ui.home.allToolsHeading}
+        class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#9DB2BF]/50 bg-white/80 text-[#526D82] transition-all hover:translate-y-0.5 hover:border-[#27374D] hover:text-[#27374D] dark:border-[#526D82]/60 dark:bg-[#1D2A3B]/80 dark:text-[#9DB2BF] dark:hover:border-[#DDE6ED] dark:hover:text-[#DDE6ED]"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- BELOW THE FOLD: All 12 Tools & Privacy Architecture (Visible only when scrolling) -->
+  <div id="all-tools" class="scroll-mt-16 border-t border-[#9DB2BF]/35 pt-16 sm:pt-20 dark:border-[#526D82]/35">
+    <!-- All 12 Tools Organized by Category -->
+    <section aria-labelledby="all-tools-heading" class="mx-auto max-w-6xl space-y-12 px-4 py-4 sm:px-6">
+    <div class="text-center">
+      <h2 id="all-tools-heading" class="text-2xl font-bold tracking-tight text-[#27374D] sm:text-3xl dark:text-[#DDE6ED]">
+        {ui.home.allToolsHeading}
+      </h2>
+      <p class="mt-2 text-sm sm:text-base text-[#526D82] dark:text-[#9DB2BF]">
+        {ui.home.allToolsSubheading}
+      </p>
+    </div>
+
+    {categories.map(({ id, hubIcon }) => {
+      const catContent = ui.categories[id];
+      const catTools = getToolsByCategory(id);
+      const hubHref = localizePath(locale, CATEGORY_HUB_SLUGS[id]);
+      return (
+        <div class="space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#9DB2BF]/40 pb-3 dark:border-[#526D82]/40">
+            <div class="flex items-center gap-3">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#DDE6ED] text-[#27374D] dark:bg-[#27374D] dark:text-[#DDE6ED]">
+                <ToolIcon icon={hubIcon} size={20} />
+              </span>
+              <h3 class="text-xl font-bold text-[#27374D] dark:text-[#DDE6ED]">
+                {catContent.name}
+              </h3>
+            </div>
+            <a
+              href={hubHref}
+              aria-label={`${ui.home.viewAllCategory}: ${catContent.name}`}
+              class="inline-flex items-center gap-1 text-sm font-semibold text-[#526D82] transition-colors hover:text-[#27374D] dark:text-[#9DB2BF] dark:hover:text-[#DDE6ED]"
+            >
+              <span>{ui.home.viewAllCategory}</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {catTools.map((tool) => {
+              const tContent = toolsDict[tool.slug];
+              return (
+                <a
+                  href={localizePath(locale, tool.slug)}
+                  class="group flex flex-col justify-between rounded-2xl border border-[#9DB2BF]/55 bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-[#27374D] hover:shadow-md dark:border-[#526D82]/60 dark:bg-[#1D2A3B] dark:hover:border-[#DDE6ED]"
+                >
+                  <div class="space-y-3">
+                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#DDE6ED]/80 text-[#27374D] transition-colors group-hover:bg-[#27374D] group-hover:text-white dark:bg-[#27374D] dark:text-[#DDE6ED] dark:group-hover:bg-[#DDE6ED] dark:group-hover:text-[#27374D]">
+                      <ToolIcon icon={tool.icon} size={22} />
+                    </span>
+                    <h4 class="text-base font-bold text-[#27374D] dark:text-[#DDE6ED]">
+                      {tContent.name}
+                    </h4>
+                    <p class="text-sm leading-relaxed text-[#526D82] dark:text-[#9DB2BF]">
+                      {tContent.cardDesc}
+                    </p>
+                  </div>
+                  <div class="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#27374D] dark:text-[#DDE6ED]">
+                    <span>{ui.home.openTool}</span>
+                    <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">→</span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      );
+    })}
+  </section>
+
+  <!-- Privacy & Architecture Pillars -->
+  <section aria-labelledby="why-omecy-heading" class="mx-auto mt-16 max-w-6xl px-4 sm:px-6">
+    <div class="rounded-3xl border border-[#9DB2BF]/55 bg-white p-8 sm:p-10 dark:border-[#526D82]/55 dark:bg-[#1D2A3B]">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 id="why-omecy-heading" class="text-2xl font-bold tracking-tight text-[#27374D] sm:text-3xl dark:text-[#DDE6ED]">
+          {ui.home.whyHeading}
+        </h2>
+        <p class="mt-3 text-sm sm:text-base leading-relaxed text-[#526D82] dark:text-[#9DB2BF]">
+          {ui.home.whySubheading}
+        </p>
+      </div>
+
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {ui.home.pillars.map((pillar) => (
+          <div class="rounded-2xl border border-[#9DB2BF]/40 bg-[#F7F9FB] p-5 dark:border-[#526D82]/40 dark:bg-[#121A26]">
+            <h3 class="text-base font-bold text-[#27374D] dark:text-[#DDE6ED]">{pillar.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-[#526D82] dark:text-[#9DB2BF]">{pillar.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  </div>
+</BaseLayout>

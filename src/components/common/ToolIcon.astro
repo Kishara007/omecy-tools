@@ -1,0 +1,121 @@
+---
+import type { ToolRegistryItem } from '../../config/site';
+
+interface Props {
+  icon: ToolRegistryItem['icon'] | 'video-hub' | 'audio-hub' | 'image-hub';
+  size?: number;
+}
+
+const { icon, size = 24 } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.9"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  {icon === 'video-hub' && (
+    <>
+      <rect x="2" y="4" width="20" height="16" rx="3" />
+      <polygon points="10 9 16 12 10 15 10 9" fill="currentColor" stroke="none" />
+    </>
+  )}
+  {icon === 'audio-hub' && (
+    <>
+      <path d="M9 18V5l12-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="18" cy="16" r="3" />
+    </>
+  )}
+  {icon === 'image-hub' && (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="3" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <path d="M21 15l-5-5L5 21" />
+    </>
+  )}
+  {icon === 'music-video' && (
+    <>
+      <rect x="2" y="4" width="13" height="16" rx="2" />
+      <path d="M18 16V7l4-1v9" />
+      <circle cx="16.5" cy="16.5" r="2" />
+    </>
+  )}
+  {icon === 'film-swap' && (
+    <>
+      <rect x="2" y="4" width="20" height="16" rx="2.5" />
+      <path d="M8 10h8l-2.5-2.5M16 14H8l2.5 2.5" />
+    </>
+  )}
+  {icon === 'video-compress' && (
+    <>
+      <path d="M4 14h6v6M20 10h-6V4" />
+      <path d="M14 10l7-7M3 21l7-7" />
+    </>
+  )}
+  {icon === 'scissors-video' && (
+    <>
+      <circle cx="6" cy="6" r="3" />
+      <circle cx="6" cy="18" r="3" />
+      <line x1="20" y1="4" x2="8.12" y2="15.88" />
+      <line x1="14.47" y1="14.48" x2="20" y2="20" />
+      <line x1="8.12" y1="8.12" x2="12" y2="12" />
+    </>
+  )}
+  {icon === 'audio-merge' && (
+    <>
+      <path d="M4 8h6l3 4-3 4H4" />
+      <path d="M13 12h7" />
+      <path d="M17 9l3 3-3 3" />
+    </>
+  )}
+  {icon === 'waveform-cut' && (
+    <>
+      <path d="M3 12h2M7 8v8M11 5v14M15 8v8M19 10v4M21 12h0" />
+    </>
+  )}
+  {icon === 'wav-mp3' && (
+    <>
+      <path d="M2 12h2l2-5 3 10 3-8 2 5 2-2h6" />
+    </>
+  )}
+  {icon === 'm4a-mp3' && (
+    <>
+      <rect x="9" y="2" width="6" height="11" rx="3" />
+      <path d="M5 10a7 7 0 0 0 14 0" />
+      <line x1="12" y1="17" x2="12" y2="22" />
+      <line x1="8" y1="22" x2="16" y2="22" />
+    </>
+  )}
+  {icon === 'image-compress' && (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="3" />
+      <path d="M9 9l3 3 3-3M12 12V6M9 17h6" />
+    </>
+  )}
+  {icon === 'webp-jpg' && (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2.5" />
+      <path d="M7 15l3-3 2 2 4-4 3 3" />
+    </>
+  )}
+  {icon === 'heic-jpg' && (
+    <>
+      <rect x="5" y="2" width="14" height="20" rx="2.5" />
+      <circle cx="12" cy="11" r="3" />
+      <line x1="12" y1="18" x2="12.01" y2="18" />
+    </>
+  )}
+  {icon === 'image-resize' && (
+    <>
+      <path d="M15 3h6v6M9 21H3v-6" />
+      <path d="M21 3l-7 7M3 21l7-7" />
+    </>
+  )}
+</svg>

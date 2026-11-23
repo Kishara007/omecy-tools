@@ -1,0 +1,42 @@
+{
+  "name": "omecy-tools",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "OMECY Tools — Ultra-fast, 100% private, zero-upload browser-based Video, Audio, and Image media utilities.",
+  "author": "Kishara Dilshan",
+  "license": "MIT",
+  "homepage": "https://omecy.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kishara007/omecy-tools.git"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "audit:seo": "node scripts/audit-seo.mjs",
+    "verify": "npm run build && npm run audit:seo",
+    "generate:assets": "node scripts/generate-assets.mjs",
+    "deploy": "npm run build && npx wrangler pages deploy ./dist --project-name=omecy-tools"
+  },
+  "dependencies": {
+    "@astrojs/preact": "^6.1.6",
+    "@astrojs/sitemap": "^3.7.6",
+    "@breezystack/lamejs": "^1.2.7",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "^7.4.13",
+    "browser-image-compression": "^2.0.2",
+    "heic2any": "^0.0.4",
+    "jszip": "^3.10.2",
+    "preact": "^10.26.4",
+    "tailwindcss": "^4.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "latest",
+    "sharp": "^0.35.5",
+    "typescript": "^5.8.3"
+  }
+}
